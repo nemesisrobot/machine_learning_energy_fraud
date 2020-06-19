@@ -3,9 +3,18 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import datetime
+import ast
+
+#método para pegar arquivo de configuração
+def lerArquivoConfiguracao():
+    configura = open('conf/config.json','r')
+    dadosconfiguracao = configura.read()
+    configura.close()
+    return ast.literal_eval(dadosconfiguracao)
+
 
 #importando dados
-dados = pd.read_json('base/dados.json')
+dados = pd.read_json('{}/{}'.format(lerArquivoConfiguracao()['basepath'],lerArquivoConfiguracao()['file']))
 
 #motando nome do arquivo
 nomeaquivo = str(str(datetime.datetime.now())[0:19]).replace('-','')
