@@ -1,0 +1,20 @@
+[2020-06-22 14:27:03.642670] Iniciando Análise
+[2020-06-22 14:27:04.239538] Tratando dados e fazer append em suas filas
+[2020-06-22 14:27:04.256010] Finalizando append de filas
+[2020-06-22 14:27:04.256033] criando novo Dataframe
+[2020-06-22 14:27:04.259028] Finalizando criação do novo Dataframe
+[2020-06-22 14:27:04.324855] Plot de dados de consumo
+[2020-06-22 14:27:36.385627] Percentual entre o dia 2020-06-07 e o dia 2020-06-08 : 1159.81%
+[2020-06-22 14:27:36.394395] Percentual entre o dia 2020-06-08 e o dia 2020-06-09 : 91.02%
+[2020-06-22 14:27:36.401343] Percentual entre o dia 2020-06-09 e o dia 2020-06-11 : 42.14%
+[2020-06-22 14:27:36.408214] Percentual entre o dia 2020-06-11 e o dia 2020-06-12 : 80.27%
+[2020-06-22 14:27:36.414416] Percentual entre o dia 2020-06-12 e o dia 2020-06-13 : 1.91%
+[2020-06-22 14:27:36.419959] Percentual entre o dia 2020-06-13 e o dia 2020-06-14 : 2.87%
+[2020-06-22 14:27:36.424850] Percentual entre o dia 2020-06-14 e o dia 2020-06-15 : 12.22%
+[2020-06-22 14:27:36.430717] Percentual entre o dia 2020-06-15 e o dia 2020-06-16 : 18.78%
+[2020-06-22 14:27:36.436889] Percentual entre o dia 2020-06-16 e o dia 2020-06-17 : 16.58%
+[2020-06-22 14:27:36.443689] Percentual entre o dia 2020-06-17 e o dia 2020-06-18 : 4.99%
+[2020-06-22 14:27:36.449637] Percentual entre o dia 2020-06-18 e o dia 2020-06-19 : 3.21%
+[2020-06-22 14:27:36.456027] Percentual entre o dia 2020-06-19 e o dia 2020-06-20 : 1.52%
+[2020-06-22 14:27:36.463421] Percentual entre o dia 2020-06-20 e o dia 2020-06-21 : -26.89%
+[2020-06-22 14:27:36.463448] Finalizando Análise

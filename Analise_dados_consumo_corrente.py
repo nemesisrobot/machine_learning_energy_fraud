@@ -46,10 +46,10 @@ def pegaDiasdeConsumo(diasconsumo):
 
 #metodo para preencher listas
 
-#fazendo append das informações na lsita
+#fazendo append das informações na lista
 print(pegaDataLeitura(dados))
 pegaDiasdeConsumo(diasconsumo)
-print(diasconsumo)
+#print(diasconsumo)
 
 arquivo.write('[{}] Tratando dados e fazer append em suas filas\n'.format(str(datetime.datetime.now())))
 #percorrendo lista e separando dados de consumo 
@@ -84,12 +84,17 @@ print('------------------------------------')
 print(novoframe)
 print('------------------------------------')
 
+#tratando data de referencia
+datas = novoframe.data.str.slice(0,7)
+datas = datas.unique()
+
 
 #plot de dados de consumo
 arquivo.write('[{}] Plot de dados de consumo\n'.format(str(datetime.datetime.now())))
-sns.barplot(x="data",y="consumo_total", data = novoframe)
-plt.title('Grafico de Consumo Evolução')
-plt.show()
+sns.barplot(x=novoframe.data.str.slice(8, 10),y="consumo_total", data = novoframe)
+plt.title('Grafico de Consumo Evolução - Data: {}'.format(datas[0]))
+#plt.show()
+plt.savefig('graficos/consumoevolucao{}.png'.format(nomeaquivo))
 
 #print dos valores do percentual de consumo de um dia para outro
 for x in range(0,(novoframe.consumo_total.count()-1)):
