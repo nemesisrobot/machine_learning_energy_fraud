@@ -1,0 +1,10 @@
+[2020-06-22 16:48:30.289735] Iniciando Análise
+[2020-06-22 16:48:30.335925] Tratando dados e fazer append em suas filas
+[2020-06-22 16:48:30.339525] Finalizando append de filas
+[2020-06-22 16:48:30.339537] criando novo Dataframe
+[2020-06-22 16:48:30.342167] Finalizando criação do novo Dataframe
+[2020-06-22 16:48:30.391989] Plot de dados de consumo
+[2020-06-22 16:48:30.998436] Percentual entre o dia 2020-06-18 e o dia 2020-06-19 : 3.21%
+[2020-06-22 16:48:31.006568] Percentual entre o dia 2020-06-19 e o dia 2020-06-20 : 1.52%
+[2020-06-22 16:48:31.013262] Percentual entre o dia 2020-06-20 e o dia 2020-06-21 : -26.89%
+[2020-06-22 16:48:31.013297] Finalizando Análise
