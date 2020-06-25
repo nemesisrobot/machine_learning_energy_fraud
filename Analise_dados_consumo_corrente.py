@@ -9,6 +9,13 @@ import ast
 from sklearn.svm import LinearSVC
 from sklearn.metrics import accuracy_score
 
+#motando nome do arquivo
+nomeaquivo = str(str(datetime.datetime.now())[0:19]).replace('-','')
+nomeaquivo = str(nomeaquivo.replace(':','')).replace(' ','')
+
+#criando arquivo
+arquivo = open('logs/analise{}'.format(nomeaquivo),'w')
+
 #método para pegar arquivo de configuração
 def lerArquivoConfiguracao():
     configura = open('conf/config.json','r')
@@ -39,15 +46,12 @@ def dias_varicao(percentual):
         
    
 #importando dados
+arquivo.write('-------------------------------------Data Science----------------------------\n')
+arquivo.write('[{}] Carregando base de dados de consumo\n'.format(str(datetime.datetime.now())))
 dados = pd.read_json('{}/{}'.format(lerArquivoConfiguracao()['basepath'],lerArquivoConfiguracao()['file']))
 
-#motando nome do arquivo
-nomeaquivo = str(str(datetime.datetime.now())[0:19]).replace('-','')
-nomeaquivo = str(nomeaquivo.replace(':','')).replace(' ','')
 
-#criando arquivo
-arquivo = open('logs/analise{}'.format(nomeaquivo),'w')
-arquivo.write('[{}] Iniciando Análise\n'.format(str(datetime.datetime.now())))
+arquivo.write('[{}] Iniciando Análise de dados\n'.format(str(datetime.datetime.now())))
 #lista para armazenar os dias de consumo
 diasconsumo = []
 
@@ -145,7 +149,7 @@ for x in range(0,(novoframe.consumo_total.count()-1)):
     arquivo.write('[{}] {}\n'.format(str(datetime.datetime.now()),mensagem_percentual_datas))
     
 arquivo.write('[{}] Finalizando Análise\n'.format(str(datetime.datetime.now())))
-arquivo.close()
+
 
 #--------------------------------------------
 #criando base de treino do machine learning
@@ -167,22 +171,28 @@ fraude4 = [1, 1, 1]
 treino_x = [fraude1, fraude2, fraude3, fraude4, semfraude1, semfraude2, semfraude3]
 treino_y = [1, 1, 1, 1, 0, 0, 0]
 
+arquivo.write('-------------------------------------Machine Learning----------------------------\n')
 #criando modelo e treinando modelo
-print('Treino modelo para analise de dados')
+arquivo.write('[{}] Iniciando treinamento do modelo de machine learning\n'.format(str(datetime.datetime.now())))
+
+print('Treino de modelo para analise de dados')
 modelo = LinearSVC()
 modelo.fit(treino_x, treino_y)
 
 #previsão
 previsao = modelo.predict(teste_x)
+arquivo.write('[{}] gerando previsão : {}\n'.format(str(datetime.datetime.now()), str(previsao)))
 
 #criando testes_y com base no dados do teste_x
 cria_dados(teste_x)
-print(previsao)
-#fazendo analise dos dados e gerando a ácuracia 
-corretos = (previsao == teste_y).sum()
-print(corretos)
-total = len(teste_x)
-taxa_de_acerto = corretos/total
+
+#fazendo analise dos dados e gerando a ácuracia
+arquivo.write('[{}] Gerando ácuracia dos dados\n'.format(str(datetime.datetime.now())))
+taxa_de_acerto = accuracy_score(teste_y, previsao)
 print("Taxa de acerto: %.2f" % (taxa_de_acerto * 100))
+arquivo.write('[{}] Probabilidade de Fraude {}% \n'.format(str(datetime.datetime.now()), str((taxa_de_acerto * 100))))
+
+#fechando escrita
+arquivo.close()
 
 
