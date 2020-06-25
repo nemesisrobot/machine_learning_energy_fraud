@@ -64,10 +64,8 @@ teste_y = []
 #método para criar teste y
 def cria_dados(recursos):
     for busca in teste_x:
-        if((busca[0]+busca[1]+busca[2]) > 1):
-            teste_y.append(1)
-        else:
-            teste_y.append(0)
+        teste_y.append(1)
+
             
 #método para coletar datas de leitura
 def pegaDataLeitura(dados):
@@ -179,13 +177,9 @@ previsao = modelo.predict(teste_x)
 
 #criando testes_y com base no dados do teste_x
 cria_dados(teste_x)
-print('previsao')
-print(previsao)
-print("y"+str(teste_y))
-print("x"+str(teste_x))
 print(previsao)
 #fazendo analise dos dados e gerando a ácuracia 
-corretos = (previsao == [1, 1, 1, 1]).sum()
+corretos = (previsao == teste_y).sum()
 print(corretos)
 total = len(teste_x)
 taxa_de_acerto = corretos/total
