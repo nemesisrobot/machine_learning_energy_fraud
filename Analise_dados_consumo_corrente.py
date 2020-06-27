@@ -1,20 +1,29 @@
-#importando bibliotecas
-import pandas as pd
+#Autor:Diego Silva
+#Data:27/06/2020
+#Descrição:Script com mode me machine learning
+
+#importando bibliotecas, para data science , plot de graficos
+import pandas as pd 
 import seaborn as sns
 import matplotlib.pyplot as plt
+
+#importando bibliotecas para matrizes , cast de dados e data e hora
 import datetime
 import ast
+import numpy as np
+
+#importando bibliotecas para valdia features e escrita de log
+import lib.escreve_log_analise as log
+import lib.valida_features as vf
 
 #bibliotecas para machine learning
 from sklearn.svm import LinearSVC
 from sklearn.metrics import accuracy_score
 
-#motando nome do arquivo
+#craindo log
 nomeaquivo = str(str(datetime.datetime.now())[0:19]).replace('-','')
 nomeaquivo = str(nomeaquivo.replace(':','')).replace(' ','')
-
-#criando arquivo
-arquivo = open('logs/analise{}'.format(nomeaquivo),'w')
+arquivo = log.criar_arquivo_log(nomeaquivo)
 
 #método para pegar arquivo de configuração
 def lerArquivoConfiguracao():
@@ -22,36 +31,14 @@ def lerArquivoConfiguracao():
     dadosconfiguracao = configura.read()
     configura.close()
     return ast.literal_eval(dadosconfiguracao)
-
-#metodo para feaature de consumo
-def tem_consumo(dia_mais_um, dia_atual):
-    if dia_atual > dia_mais_um:
-        return 0
-    else:
-        return 1
-
-#método de feature para checar se variação esta dentro do esperado
-def dentro_do_esperado(percentual):
-    if percentual >= 12.00:
-        return 0
-    else:
-        return 1
-
-#método para feature de variação entre dias
-def dias_varicao(percentual):
-    if percentual >= 10:
-        return 0
-    else:
-        return 1
-        
    
 #importando dados
-arquivo.write('-------------------------------------Data Science----------------------------\n')
-arquivo.write('[{}] Carregando base de dados de consumo\n'.format(str(datetime.datetime.now())))
+log.escrever(arquivo, '-------------------------------------Data Science----------------------------\n', None)
+log.escrever(arquivo,'Carregando base de dados de consumo',datetime.datetime.now())
+
 dados = pd.read_json('{}/{}'.format(lerArquivoConfiguracao()['basepath'],lerArquivoConfiguracao()['file']))
 
-
-arquivo.write('[{}] Iniciando Análise de dados\n'.format(str(datetime.datetime.now())))
+log.escrever(arquivo, 'Iniciando Análise de dados',datetime.datetime.now())
 #lista para armazenar os dias de consumo
 diasconsumo = []
 
@@ -66,9 +53,9 @@ teste_x = []
 teste_y = []
 
 #método para criar teste y
-def cria_dados(recursos):
-    for busca in teste_x:
-        teste_y.append(1)
+def cria_classe_teste_y(quantidade_de_um):
+    for conta in range(0, quantidade_de_um):
+        teste_y.append(np.ones(1))
 
             
 #método para coletar datas de leitura
@@ -87,9 +74,8 @@ def pegaDiasdeConsumo(diasconsumo):
 #fazendo append das informações na lista
 print(pegaDataLeitura(dados))
 pegaDiasdeConsumo(diasconsumo)
-#print(diasconsumo)
 
-arquivo.write('[{}] Tratando dados e fazer append em suas filas\n'.format(str(datetime.datetime.now())))
+log.escrever(arquivo,'Tratando dados e fazer append em suas filas',datetime.datetime.now())
 #percorrendo lista e separando dados de consumo 
 for procura in diasconsumo:
 
@@ -104,10 +90,11 @@ for procura in diasconsumo:
 
     #append dos dados da minima
     minima.append(procura.consumo.min())
-arquivo.write('[{}] Finalizando append de filas\n'.format(str(datetime.datetime.now())))
+    
+log.escrever(arquivo,'Finalizando append de filas',datetime.datetime.now())
 
 #gerando novo dataframe
-arquivo.write('[{}] criando novo Dataframe\n'.format(str(datetime.datetime.now())))
+log.escrever(arquivo,'criando novo Dataframe',datetime.datetime.now())
 novoframe = {
     'consumo_total':consumo,
     'media':media,
@@ -117,7 +104,7 @@ novoframe = {
     }
 
 novoframe = pd.DataFrame(novoframe)
-arquivo.write('[{}] Finalizando criação do novo Dataframe\n'.format(str(datetime.datetime.now())))
+log.escrever(arquivo,'Finalizando criação do novo Dataframe',datetime.datetime.now())
 print('------------------------------------')
 print(novoframe)
 print('------------------------------------')
@@ -126,12 +113,11 @@ print('------------------------------------')
 datas = novoframe.data.str.slice(0,7)
 datas = datas.unique()
 
-
 #plot de dados de consumo
-arquivo.write('[{}] Plot de dados de consumo\n'.format(str(datetime.datetime.now())))
+log.escrever(arquivo,'Plot de dados de consumo',datetime.datetime.now())
+
 sns.barplot(x=novoframe.data.str.slice(8, 10),y="consumo_total", data = novoframe)
 plt.title('Grafico de Consumo Evolução - Data: {}'.format(datas[0]))
-#plt.show()
 plt.savefig('graficos/consumoevolucao{}.png'.format(nomeaquivo))
 
 #print dos valores do percentual de consumo de um dia para outro
@@ -140,15 +126,15 @@ for x in range(0,(novoframe.consumo_total.count()-1)):
     mensagem_percentual_datas = "Percentual entre o dia {} e o dia {} : {:.2f}%".format(novoframe.data[x],novoframe.data[x+1],percentual)
 
     #motando dados para uso de features do machine learning
-    teste_x.append([tem_consumo(novoframe.consumo_total[x+1], novoframe.consumo_total[x]),
-    dentro_do_esperado(percentual),
-    dias_varicao(percentual)])
+    teste_x.append([vf.tem_consumo(novoframe.consumo_total[x+1], novoframe.consumo_total[x]),
+    vf.dentro_do_esperado(percentual),
+    vf.dias_varicao(percentual)])
     
     #print de informações
     print(mensagem_percentual_datas)
-    arquivo.write('[{}] {}\n'.format(str(datetime.datetime.now()),mensagem_percentual_datas))
-    
-arquivo.write('[{}] Finalizando Análise\n'.format(str(datetime.datetime.now())))
+    log.escrever(arquivo, mensagem_percentual_datas, datetime.datetime.now())
+
+log.escrever(arquivo, 'Finalizando Análise', datetime.datetime.now())  
 
 
 #--------------------------------------------
@@ -171,9 +157,9 @@ fraude4 = [1, 1, 1]
 treino_x = [fraude1, fraude2, fraude3, fraude4, semfraude1, semfraude2, semfraude3]
 treino_y = [1, 1, 1, 1, 0, 0, 0]
 
-arquivo.write('-------------------------------------Machine Learning----------------------------\n')
+log.escrever(arquivo,'-------------------------------------Machine Learning----------------------------',None)
 #criando modelo e treinando modelo
-arquivo.write('[{}] Iniciando treinamento do modelo de machine learning\n'.format(str(datetime.datetime.now())))
+log.escrever(arquivo,'Iniciando treinamento do modelo de machine learning',datetime.datetime.now())
 
 print('Treino de modelo para analise de dados')
 modelo = LinearSVC()
@@ -181,18 +167,20 @@ modelo.fit(treino_x, treino_y)
 
 #previsão
 previsao = modelo.predict(teste_x)
-arquivo.write('[{}] gerando previsão : {}\n'.format(str(datetime.datetime.now()), str(previsao)))
+log.escrever(arquivo, 'gerando previsão : {}\n'.format(str(previsao)), datetime.datetime.now())
 
 #criando testes_y com base no dados do teste_x
-cria_dados(teste_x)
+cria_classe_teste_y(len(teste_x))
 
+print(len(teste_x))
 #fazendo analise dos dados e gerando a ácuracia
-arquivo.write('[{}] Gerando ácuracia dos dados\n'.format(str(datetime.datetime.now())))
+log.escrever(arquivo,'Gerando ácuracia dos dados',datetime.datetime.now())
 taxa_de_acerto = accuracy_score(teste_y, previsao)
 print("Taxa de acerto: %.2f" % (taxa_de_acerto * 100))
-arquivo.write('[{}] Probabilidade de Fraude {}% \n'.format(str(datetime.datetime.now()), str((taxa_de_acerto * 100))))
+log.escrever(arquivo,'Probabilidade de Fraude {}%'.format(str((taxa_de_acerto * 100))), datetime.datetime.now())
 
 #fechando escrita
-arquivo.close()
+log.fechar_arquivo(arquivo)
+
 
 
